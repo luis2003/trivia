@@ -92,7 +92,7 @@ def venues():
     "state": "CA",
     "venues": [{
       "id": 1,
-      "name": "The Musical Hop",
+      "name": "Auditorio Oeste",
       "num_upcoming_shows": 0,
     }, {
       "id": 3,
