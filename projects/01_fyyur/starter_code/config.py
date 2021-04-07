@@ -9,5 +9,8 @@ DEBUG = True
 # Connect to the database
 
 
-# TODO IMPLEMENT DATABASE URL
-SQLALCHEMY_DATABASE_URI = '<Put your local database url>'
+# (DONE) IMPLEMENT DATABASE URL
+SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:dimulstR@localhost:5432/fyyur'
+
+# disable SQLALCHEMY_TRACK_MODIFICATIONS
+SQLALCHEMY_TRACK_MODIFICATIONS = False
