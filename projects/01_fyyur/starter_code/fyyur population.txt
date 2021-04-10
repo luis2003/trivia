@@ -7,10 +7,12 @@ SELECT "Artist".id, "Artist".name, "Venue".id, "Venue".name, show.start_time
 FROM ((show
 INNER JOIN "Artist" ON "Artist".id = show.artist_id)
 INNER JOIN "Venue" ON  "Venue".id = show.venue_id);
+WHERE show.artist_id = 3;
 
 SELECT *
 FROM show
 INNER JOIN "Artist" ON "Artist".id = show.artist_id;
+
 INSERT INTO "Venue" (name, city, state, genres) VALUES ('studio', 'New York', 'NY', ARRAY ['Classical']);
 
 UPDATE "Venue"
