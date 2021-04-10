@@ -385,7 +385,38 @@ def show_artist(artist_id):
     "upcoming_shows_count": 3,
   }
   #data = list(filter(lambda d: d['id'] == artist_id, [data1, data2, data3]))[0]
-  data = Artist.query.filter_by(id=artist_id).all()[0]
+  result_query_artist = Artist.query.filter_by(id=artist_id).all()[0]
+  data = result_query_artist.__dict__
+  q = db.session.query(Venue, Show).join(Venue.show).filter_by(artist_id=artist_id)
+  qresult = q.all()
+  total_past_shows = 0
+  total_upc_shows = 0
+  past_shows = []
+  upcoming_shows = []
+  for tup in qresult:
+    if tup[1].start_time <= datetime.now():
+      print('Past show:' + str(tup[1].start_time))
+      new_past_show = {}
+      new_past_show["venue_id"] = tup[0].id
+      new_past_show["venue_name"] = tup[0].name
+      new_past_show["venue_image_link"] = tup[0].image_link
+      new_past_show["start_time"] = str(tup[1].start_time)
+      past_shows.append(new_past_show)
+      total_past_shows += 1
+    else:
+      print('Upcoming show:' + str(tup[1].start_time))
+      new_upc_show = {}
+      new_upc_show["venue_id"] = tup[0].id
+      new_upc_show["venue_name"] = tup[0].name
+      new_upc_show["venue_image_link"] = tup[0].image_link
+      new_upc_show["start_time"] = str(tup[1].start_time)
+      upcoming_shows.append(new_upc_show)
+      total_upc_shows += 1
+
+  data['upcoming_shows'] = upcoming_shows
+  data['past_shows'] = past_shows
+  data['past_shows_count'] = total_past_shows
+  data['upcoming_shows_count'] = total_upc_shows
   return render_template('pages/show_artist.html', artist=data)
 
 #  Update
@@ -504,17 +535,23 @@ def create_artist_submission():
                   )
 
   #add obj to the session and commit to the db
-  db.session.add(artist)
-  db.session.commit()
-
+  try:
+    db.session.add(artist)
+    db.session.commit()
   # called upon submitting the new artist listing form
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
-
   # on successful db insert, flash success
-  flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    flash('Artist ' + request.form['name'] + ' was successfully listed!')
   # TODO: on unsuccessful db insert, flash an error instead.
   # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Artist ' + Artist.name + ' could not be listed.')
+    print(sys.exc_info())
+  finally:
+    db.session.close()
+
   return render_template('pages/home.html')
 
 
