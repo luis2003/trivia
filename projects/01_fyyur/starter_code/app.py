@@ -14,75 +14,22 @@ from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
 import sys
+from models import app, db, Venue, Artist, Show
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 
-app = Flask(__name__)
-moment = Moment(app)
-app.config.from_object('config')
-db = SQLAlchemy(app)
+#app = Flask(__name__)
 
-migrate = Migrate(app, db)
+#db = SQLAlchemy(app)
+
+#migrate = Migrate(app, db)
+db.init_app(app)
+moment = Moment(app)
+
 
 # (DONE) TODO: connect to a local postgresql database
-
-#----------------------------------------------------------------------------#
-# Models.
-#----------------------------------------------------------------------------#
-
-class Venue(db.Model):
-    __tablename__ = 'Venue'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    genres = db.Column(db.ARRAY(db.String), nullable=False)
-    image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
-    website_link = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean)
-    seeking_description = db.Column(db.String(120))
-    #relationship
-    show = db.relationship('Show', backref='Venue', cascade='all, delete')
-
-    # (DONE?) TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-class Artist(db.Model):
-    __tablename__ = 'Artist'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    city = db.Column(db.String(120))
-    state = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
-    genres = db.Column(db.ARRAY(db.String), nullable=False)
-    image_link = db.Column(db.String(500))
-    website_link = db.Column(db.String(120))
-    facebook_link = db.Column(db.String(120))
-    seeking_venue = db.Column(db.Boolean)
-    seeking_description = db.Column(db.String(120))
-    #relationship
-    show = db.relationship('Show', backref='Artist', cascade='all, delete')
-
-
-    # (DONE?) TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-
-class Show(db.Model):
-  __tablename__ = 'show'
-  id = db.Column(db.Integer, primary_key=True)
-  venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id', ondelete='CASCADE'), nullable=False)
-  artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id', ondelete='CASCADE'), nullable=False)
-  start_time = db.Column(db.DateTime, nullable=False)
-# relationships
-#  artist = db.relationship(Artist, backref=db.backref('show', cascade='all, delete'))
-#  venue = db.relationship(Venue, backref=db.backref('show', cascade='all, delete'))
-
-# (DONE?) TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -794,7 +741,8 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
-    app.run()
+    db.init_app(app)
+    app.run(debug=True)
 
 # Or specify port manually:
 '''
