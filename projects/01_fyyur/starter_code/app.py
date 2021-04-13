@@ -5,7 +5,15 @@
 import json
 import dateutil.parser
 import babel
-from flask import Flask, render_template, request, Response, flash, redirect, url_for
+from flask import (
+  Flask,
+  render_template,
+  request,
+  Response,
+  flash,
+  redirect,
+  url_for
+)
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 import logging
@@ -122,48 +130,35 @@ def create_venue_form():
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
 
-  #get values from form
-  name = request.form.get('name')
-  city = request.form.get('city')
-  state = request.form.get('state')
-  phone = request.form.get('phone')
-  genres = request.form.getlist('genres')
-  facebook_link = request.form.get('facebook_link')
-  image_link = request.form.get('image_link')
-  website_link = request.form.get('website_link')
-  if request.form.get('seeking_talent') == 'y':
-    seeking_talent = True
+  form = VenueForm(request.form, meta={'csrf': False})
+
+  if form.validate():
+    try:
+      new_venue = Venue()
+      form.populate_obj(new_venue)
+
+      # add obj to the session and commit to the db
+      db.session.add(new_venue)
+      db.session.commit()
+
+    # on successful db insert, flash success
+      flash('Venue ' + request.form['name'] + ' was successfully listed!')
+
+    except:
+      db.session.rollback()
+      flash('An error occurred. Venue ' + new_venue.name + ' could not be listed.')
+      print(sys.exc_info())
+    finally:
+      db.session.close()
+
   else:
-    seeking_talent = False
-  seeking_description = request.form.get('seeking_description')
+    message = []
+    for field, err in form.errors.items():
+      message.append(field + ' ' + '|'.join(err))
+    flash('Errors ' + str(message))
 
-  #create artist object with form values
-  new_venue = Venue(name=name,
-                  city=city,
-                  state=state,
-                  phone=phone,
-                  genres=genres,
-                  facebook_link=facebook_link,
-                  image_link=image_link,
-                  website_link=website_link,
-                  seeking_talent=seeking_talent,
-                  seeking_description=seeking_description
-                  )
-
-  #add obj to the session and commit to the db
-  try:
-    db.session.add(new_venue)
-    db.session.commit()
-  # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-
-  except:
-    db.session.rollback()
-    flash('An error occurred. Venue ' + new_venue.name + ' could not be listed.')
-    print(sys.exc_info())
-  finally:
-    db.session.close()
   return render_template('pages/home.html')
+
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
@@ -252,20 +247,25 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-
   artist=Artist.query.filter_by(id=artist_id).all()[0]
-  form = ArtistForm(request.form)
-  try:
-    form.populate_obj(artist)
+  form = ArtistForm(request.form, meta={'csrf': False})
+  if form.validate():
+    try:
+      form.populate_obj(artist)
 
-    db.session.add(artist)
-    db.session.commit()
-    flash(f'Artist {form.name.data} was successfully edited!')
-  except ValueError as e:
-    db.session.rollback()
-    flash(f'An error occurred in {form.name.data}. Error: {str(e)}')
-  finally:
-    db.session.close()
+      db.session.add(artist)
+      db.session.commit()
+      flash(f'Artist {form.name.data} was successfully edited!')
+    except ValueError as e:
+      db.session.rollback()
+      flash(f'An error occurred in {form.name.data}. Error: {str(e)}')
+    finally:
+      db.session.close()
+  else:
+    message = []
+    for field, err in form.errors.items():
+      message.append(field + ' ' + '|'.join(err))
+    flash('Errors ' + str(message))
 
   return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -280,17 +280,25 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
 
   edit_venue = Venue.query.filter_by(id=venue_id).all()[0]
-  form = VenueForm(request.form)
-  try:
-    form.populate_obj(edit_venue)
-    db.session.add(edit_venue)
-    db.session.commit()
-    flash(f'Venue {form.name.data} was successfully edited!')
-  except ValueError as e:
-    db.session.rollback()
-    flash(f'An error occurred in {form.name.data}. Error: {str(e)}')
-  finally:
-    db.session.close()
+  form = VenueForm(request.form, meta={'csrf': False})
+
+  if form.validate():
+    try:
+      form.populate_obj(edit_venue)
+      db.session.add(edit_venue)
+      db.session.commit()
+      flash(f'Venue {form.name.data} was successfully edited!')
+    except ValueError as e:
+      db.session.rollback()
+      flash(f'An error occurred in {form.name.data}. Error: {str(e)}')
+    finally:
+      db.session.close()
+  else:
+    message = []
+    for field, err in form.errors.items():
+      message.append(field + ' ' + '|'.join(err))
+    flash('Errors ' + str(message))
+
 
   return redirect(url_for('show_venue', venue_id=venue_id))
 
@@ -304,46 +312,33 @@ def create_artist_form():
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
+
   #get values from form
-  name = request.form.get('name')
-  city = request.form.get('city')
-  state = request.form.get('state')
-  phone = request.form.get('phone')
-  genres = request.form.getlist('genres')
-  facebook_link = request.form.get('facebook_link')
-  image_link = request.form.get('image_link')
-  website_link = request.form.get('website_link')
-  if request.form.get('seeking_venue') == 'y':
-    seeking_venue = True
+  form = ArtistForm(request.form, meta={'csrf': False})
+
+  if form.validate():
+    try:
+      new_artist = Artist()
+      form.populate_obj(new_artist)
+
+      # add obj to the session and commit to the db
+      db.session.add(new_artist)
+      db.session.commit()
+
+      flash('Artist ' + new_artist.name + ' was successfully listed!')
+
+    except:
+      db.session.rollback()
+      flash('An error occurred. Artist ' + new_artist.name + ' could not be listed.')
+      print(sys.exc_info())
+    finally:
+      db.session.close()
+
   else:
-    seeking_venue = False
-  seeking_description = request.form.get('seeking_description')
-
-
-  #create artist object with form values
-  artist = Artist(name=name,
-                  city=city,
-                  state=state,
-                  phone=phone,
-                  genres=genres,
-                  facebook_link=facebook_link,
-                  image_link=image_link,
-                  website_link=website_link,
-                  seeking_venue=seeking_venue,
-                  seeking_description=seeking_description
-                  )
-
-  #add obj to the session and commit to the db
-  try:
-    db.session.add(artist)
-    db.session.commit()
-    flash('Artist ' + request.form['name'] + ' was successfully listed!')
-  except:
-    db.session.rollback()
-    flash('An error occurred. Artist ' + Artist.name + ' could not be listed.')
-    print(sys.exc_info())
-  finally:
-    db.session.close()
+    message = []
+    for field, err in form.errors.items():
+      message.append(field + ' ' + '|'.join(err))
+    flash('Errors ' + str(message))
 
   return render_template('pages/home.html')
 
@@ -383,17 +378,11 @@ def create_shows():
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
   # called to create new shows in the db, upon submitting new show listing form
-
-  # get values from form
-  artist_id = request.form.get('artist_id')
-  venue_id = request.form.get('venue_id')
-  start_time = request.form.get('start_time')
+  form = ShowForm(request.form)
 
   # create artist object with form values
-  new_show = Show(artist_id=artist_id,
-                  venue_id=venue_id,
-                  start_time=start_time,
-                  )
+  new_show = Show()
+  form.populate_obj(new_show)
 
   # add obj to the session and commit to the db
   try:
