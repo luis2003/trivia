@@ -36,12 +36,12 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_get_paginated_questions(self):
         res = self.client().get('/questions')
-        #data = json.loads(res.data)
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
-        #self.assertEqual(data['success'], True)
-        #self.assertTrue(data['total_books'])
-        #self.assertTrue(len(data['books']))
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
 
 
 # Make the tests conveniently executable
