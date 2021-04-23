@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -114,10 +114,26 @@ def create_app(test_config=None):
     new_q_difficulty = body.get('difficulty', None)
     new_q_category = body.get('category', None)
 
+    '''
     print(new_q_question + ' '
           + new_q_answer + ' '
           + new_q_difficulty + ' '
           + new_q_category)
+          '''
+    try:
+      new_q = Question(question=new_q_question,
+                       answer=new_q_answer,
+                       difficulty=new_q_difficulty,
+                       category=new_q_category)
+
+      new_q.insert()
+
+      return jsonify({
+        'success': True
+      })
+
+    except:
+      abort(422)
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
