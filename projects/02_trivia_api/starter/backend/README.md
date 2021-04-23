@@ -72,9 +72,12 @@ This README is missing documentation of your endpoints. Below is an example for 
 
 Endpoints
 GET '/categories'
-GET '/questions'
-POST ...
-DELETE ...
+GET '/questions' (get questions, paginated)
+GET '/questions?category=<cat.id>'
+POST '/questions' (new question)
+POST '/questions?search=<term>'
+POST '/questions?[category=<cat.id>]&prev_q=<quest.id>' (get questions to play the quiz)
+DELETE '/questions/<id>'
 
 GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category

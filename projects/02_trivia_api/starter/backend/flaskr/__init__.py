@@ -26,12 +26,12 @@ def create_app(test_config=None):
   setup_db(app)
   
   '''
-  @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+  @TODO-DONE: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
   cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
   '''
-  @TODO: Use the after_request decorator to set Access-Control-Allow
+  @TODO-DONE: Use the after_request decorator to set Access-Control-Allow
   '''
 
   # CORS Headers
@@ -42,7 +42,7 @@ def create_app(test_config=None):
     return response
 
   '''
-  @TODO: 
+  @TODO-DONE: 
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
@@ -60,7 +60,7 @@ def create_app(test_config=None):
     })
 
   '''
-  @TODO: 
+  @TODO-DONE: 
   Create an endpoint to handle GET requests for questions, 
   including pagination (every 10 questions). 
   This endpoint should return a list of questions, 
@@ -77,7 +77,6 @@ def create_app(test_config=None):
     current_questions = paginate_questions(request, selection)
 
     categories = Category.query.order_by(Category.id).all()
-    #cats_json = [cat.format() for cat in categories]
     catgs_dict = {cat.id: cat.type for cat in categories}
 
     if len(current_questions) == 0:
@@ -107,7 +106,18 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    body = request.get_json()
+    new_q_question = body.get('question', None)
+    new_q_answer = body.get('answer', None)
+    new_q_difficulty = body.get('difficulty', None)
+    new_q_category = body.get('category', None)
 
+    print(new_q_question + ' '
+          + new_q_answer + ' '
+          + new_q_difficulty + ' '
+          + new_q_category)
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
