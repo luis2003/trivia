@@ -76,7 +76,7 @@ GET '/questions' (get questions, paginated)
 GET '/categories/<int:cat_id>/questions'
 POST '/questions' (new question)
 POST '/questions?search=<term>'
-POST '/questions?[category=<cat.id>]&prev_q=<quest.id>' (get questions to play the quiz)
+POST '/quizzes' (get questions to play the quiz)
 DELETE '/questions/<int:q_id>'
 
 ###GET '/categories'
@@ -288,6 +288,22 @@ SAMPLE RESPONSE:
   ],
   "total_questions": 19
 }
+
+### POST '/quizzes' (get questions to play the quiz)
+
+- General: endpoint to get questions to play the quiz.
+- Request Arguments: category and previous question parameters {previous_questions: [], quiz_category: {type: "Sports", id: "6"}}
+- Returns:  random questions within the given category that is not one of the previous questions.
+
+SAMPLE REQUEST: $ curl 
+SAMPLE RESPONSE:
+ $ curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "Sports", "id": "6"}}' -s
+{
+  "error": 422,
+  "message": " Unprocessable Entity",
+  "success": false
+}
+
 
 ## Testing
 To run the tests, run

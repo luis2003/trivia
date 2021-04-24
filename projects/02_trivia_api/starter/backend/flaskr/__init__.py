@@ -224,9 +224,12 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+  @app.route('/quizzes', methods=['POST'])
+  def retrieve_questions_for_quiz():
+    pass
 
   '''
-  @TODO: 
+  @TODO-DONE: 
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
