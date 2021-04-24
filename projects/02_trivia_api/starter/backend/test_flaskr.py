@@ -113,6 +113,18 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 422)
 
+    def test_list_questions_by_category(self):
+        res = self.client().get('/categories/2/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(data['questions']), 4)
+
+    def test_404_when_listing_questions_for_invalid_cat(self):
+        res = self.client().get('/categories/2000/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

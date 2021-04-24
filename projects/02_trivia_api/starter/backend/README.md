@@ -73,7 +73,7 @@ This README is missing documentation of your endpoints. Below is an example for 
 ##Endpoints
 GET '/categories'
 GET '/questions' (get questions, paginated)
-GET '/questions?category=<cat.id>'
+GET '/categories/<int:cat_id>/questions'
 POST '/questions' (new question)
 POST '/questions?search=<term>'
 POST '/questions?[category=<cat.id>]&prev_q=<quest.id>' (get questions to play the quiz)
@@ -206,10 +206,10 @@ SAMPLE RESPONSE:
 ### POST '/questions?search=<term>'
 - General: endpoint to get questions based on a search term. 
 - Request Arguments: search=<term>
-- Returns: Questions list including any questions for whom the search term is a substring of the question. 
+- Returns: categories, currentcategory, total questions and Questions list including any questions for whom the search term is a substring of the question. 
 
 SAMPLE REQUEST: $ curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"search":"title"}' -s
-SAMPLE RESPONSE
+SAMPLE RESPONSE:
 {
   "categories": {
     "1": "Science",
@@ -239,7 +239,55 @@ SAMPLE RESPONSE
   "total_questions": 19
 }
 
+### GET '/categories/<int:cat_id>/questions'
+- General: endpoint to get questions based on category.
+- Request Arguments: None
+- Returns:  categories, current category, total questions and Questions list including any questions for whom the category matches the selected in the frontend.
 
+SAMPLE REQUEST: $ curl http://127.0.0.1:5000/categories/2/questions -s
+SAMPLE RESPONSE:
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    },
+    {
+      "answer": "One",
+      "category": 2,
+      "difficulty": 4,
+      "id": 18,
+      "question": "How many paintings did Van Gogh sell in his lifetime?"
+    },
+    {
+      "answer": "Jackson Pollock",
+      "category": 2,
+      "difficulty": 2,
+      "id": 19,
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+    }
+  ],
+  "total_questions": 19
+}
 
 ## Testing
 To run the tests, run
