@@ -132,12 +132,18 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(data['questions']), 2)
+        self.assertTrue(data['question'])
 
-    def test_404_wrong_category_for_quiz(self):
+    def test_null_wrong_category_for_quiz(self):
         res = self.client().post('/quizzes', json={'previous_questions': [],
-                                                   'quiz_category': {'type': "Sports", 'id': "1000"}})
+                                                   'quiz_category': {'type': "Sports", 'id': "6000"}})
         data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['question'], None)
+
+    def test_422_no_category_for_quiz(self):
+        res = self.client().post('/quizzes', json={'previous_questions': []})
 
         self.assertEqual(res.status_code, 422)
 

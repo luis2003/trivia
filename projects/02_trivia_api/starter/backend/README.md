@@ -290,20 +290,21 @@ SAMPLE RESPONSE:
 }
 
 ### POST '/quizzes' (get questions to play the quiz)
-
 - General: endpoint to get questions to play the quiz.
-- Request Arguments: category and previous question parameters {previous_questions: [], quiz_category: {type: "Sports", id: "6"}}
+- Request Arguments: dictionary of selected category and list of previous questions parameters {previous_questions: [], quiz_category: {type: "Sports", id: "6"}}
 - Returns:  random questions within the given category that is not one of the previous questions.
 
-SAMPLE REQUEST: $ curl 
+SAMPLE REQUEST: $ curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "Sports", "id": "6"}}' -s
 SAMPLE RESPONSE:
- $ curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"previous_questions": [], "quiz_category": {"type": "Sports", "id": "6"}}' -s
 {
-  "error": 422,
-  "message": " Unprocessable Entity",
-  "success": false
+  "question": {
+    "answer": "Brazil",
+    "category": 6,
+    "difficulty": 3,
+    "id": 10,
+    "question": "Which is the only team to play in every soccer World Cup tournament?"
+  }
 }
-
 
 ## Testing
 To run the tests, run
