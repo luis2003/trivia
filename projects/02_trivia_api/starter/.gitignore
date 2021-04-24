@@ -1,9 +1,17 @@
+#python-dotenv file for environment variables (secrets)
 .env
+# editors
 .vscode
 .idea
 __pycache__
+# python virtual environments
 venv
 env
+# REACT frontend
+node_modules/
+npm-debug
+yarn-debug.log
+
 
 # OS generated files #
 ######################
