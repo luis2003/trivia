@@ -84,7 +84,7 @@ def create_app(test_config=None):
 
     return jsonify({
       'questions': current_questions,
-      'total_questions': len(Question.query.all()),  # should this not be len of selection?
+      'total_questions': len(selection),
       'current_category': None,
       'categories': catgs_dict
     })
@@ -156,7 +156,7 @@ def create_app(test_config=None):
 
         return jsonify({
           'questions': select_result,
-          'total_questions': len(Question.query.all()),  # should this not be len of selection?
+          'total_questions': len(select_result),
           'current_category': None,
           'categories': catgs_dict
         })
@@ -208,7 +208,7 @@ def create_app(test_config=None):
 
     return jsonify({
       'questions': current_questions,
-      'total_questions': len(Question.query.all()),
+      'total_questions': len(selection),
       'current_category': None,
       'categories': catgs_dict
     })
