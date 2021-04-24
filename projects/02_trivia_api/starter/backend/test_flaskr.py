@@ -62,12 +62,44 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['categories']))
 
     def test_404_sent_requesting_invalid_page(self):
-        res = self.client().get('/questions?page=-2')
+        res = self.client().get('/questions?page=-200')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
+
+    def test_post_new_question(self):
+        res = self.client().post('/questions', json={'question': 'Neverwhere?',
+                                                     'answer': 'Neil Gaiman',
+                                                     'difficulty': 5,
+                                                     'category': 1})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    def test_422_new_question_no_answer_and_difficulty(self):
+        res = self.client().post('/questions', json={'question': 'Neverwhere?',
+                                                     'category': 1})
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+
+    '''def test_delete_question(self):
+        res = self.client().delete('/questions/33')
+        data = json.loads(res.data)
+
+        question = Question.query.filter(Question.id == 33).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(question, None)'''
+
+    def test_404_deleting_invalid_question_id(self):
+        res = self.client().delete('/questions/-33')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

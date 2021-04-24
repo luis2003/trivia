@@ -77,7 +77,7 @@ GET '/questions?category=<cat.id>'
 POST '/questions' (new question)
 POST '/questions?search=<term>'
 POST '/questions?[category=<cat.id>]&prev_q=<quest.id>' (get questions to play the quiz)
-DELETE '/questions/<id>'
+DELETE '/questions/<int:q_id>'
 
 ###GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
@@ -91,11 +91,13 @@ DELETE '/questions/<id>'
 '6' : "Sports"}
 
 ###GET '/questions'
-- Returns a list of question objects, integer of total questions, current category as None, and dictionary of cat.id:cat.name.
--Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1.
+- endpoint to handle GET requests for questions, including pagination (every 10 questions). 
+- Request Arguments: choose page number, starting from 1.
+- Returns: a list of question objects, integer of total questions, current category as None, and dictionary of cat.id:cat.name. Results are paginated in groups of 10.
 
-SAMPLE curl http://localhost:5000/questions
+SAMPLE REQUEST: 'curl http://localhost:5000/questions'
 
+SAMPLE RESPONSE:
 {
   "categories": {
     "1": "Science",
@@ -180,9 +182,27 @@ SAMPLE curl http://localhost:5000/questions
   ],
   "total_questions": 19
 }
-##POST '/questions' (new question)
-- `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Neverwhere", "answer":"Neil Gaiman", "difficulty":"5", "category":"1"}'`
---windows cmd: 'curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d "{\"question\":\"Neverwhere\", \"answer\":\"Gaiman\", \"difficulty\":\"5\", \"category\":\"1\"}"'
+## POST '/questions' (new question)
+- General: endpoint to POST a new question 
+- Request Arguments: will require the question and answer text, category, and difficulty score.
+- Returns: JSON success message
+- SAMPLE REQUEST: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Neverwhere", "answer":"Neil Gaiman", "difficulty":"5", "category":"1"}'`
+
+SAMPLE RESPONSE
+{
+  "success": true
+}
+
+### DELETE '/questions/<int:q_id>'
+- General: endpoint to DELETE question 
+- Request Arguments: question ID as an integer
+- Returns: JSON success message
+- SAMPLE REQUEST: `$ curl http://127.0.0.1:5000/questions/33 -s -X DELETE`
+SAMPLE RESPONSE:
+{
+  "success": true
+}
+
 
 ## Testing
 To run the tests, run

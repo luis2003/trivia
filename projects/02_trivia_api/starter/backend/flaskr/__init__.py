@@ -66,7 +66,7 @@ def create_app(test_config=None):
   This endpoint should return a list of questions, 
   number of total questions, current category, categories. 
 
-  TEST: At this point, when you start the application
+  TEST-DONE: At this point, when you start the application
   you should see questions and categories generated,
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
@@ -89,37 +89,58 @@ def create_app(test_config=None):
       'categories': catgs_dict
     })
   '''
-  @TODO: 
+  @TODO-DONE: 
   Create an endpoint to DELETE question using a question ID. 
 
-  TEST: When you click the trash icon next to a question, the question will be removed.
+  TEST-DONE: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
+  @app.route('/questions/<int:q_id>', methods=['DELETE'])
+  def delete_question(q_id):
+    try:
+      q_to_delete = Question.query.filter(Question.id == q_id).one_or_none()
+
+      if q_to_delete is None:
+        abort(404)
+
+      q_to_delete.delete()
+
+      return jsonify({
+        'success': True,
+      })
+
+    except:
+      abort(422)
 
   '''
-  @TODO: 
+  @TODO-DONE: 
   Create an endpoint to POST a new question, 
   which will require the question and answer text, 
   category, and difficulty score.
 
-  TEST: When you submit a question on the "Add" tab, 
+  TEST-DONE: When you submit a question on the "Add" tab, 
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()
+
+    for value in body:
+        if value == "":
+          abort(422)
+
     new_q_question = body.get('question', None)
     new_q_answer = body.get('answer', None)
     new_q_difficulty = body.get('difficulty', None)
     new_q_category = body.get('category', None)
 
-    '''
-    print(new_q_question + ' '
-          + new_q_answer + ' '
-          + new_q_difficulty + ' '
-          + new_q_category)
-          '''
+    if (not new_q_question or
+      not new_q_question or
+      not new_q_difficulty or
+      not new_q_category):
+      abort(422)
+
     try:
       new_q = Question(question=new_q_question,
                        answer=new_q_answer,
@@ -187,6 +208,14 @@ def create_app(test_config=None):
       "error": 405,
       "message": "Method Not Allowed"
       }), 405
+
+  @app.errorhandler(422)
+  def  unprocessable_entity(error):
+    return jsonify({
+      "success": False,
+      "error": 422,
+      "message": " Unprocessable Entity"
+      }), 422
 
   return app
 
