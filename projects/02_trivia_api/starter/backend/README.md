@@ -203,6 +203,43 @@ SAMPLE RESPONSE:
   "success": true
 }
 
+### POST '/questions?search=<term>'
+- General: endpoint to get questions based on a search term. 
+- Request Arguments: search=<term>
+- Returns: Questions list including any questions for whom the search term is a substring of the question. 
+
+SAMPLE REQUEST: $ curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"search":"title"}' -s
+SAMPLE RESPONSE
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "current_category": null,
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Edward Scissorhands",
+      "category": 5,
+      "difficulty": 3,
+      "id": 6,
+      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+    }
+  ],
+  "total_questions": 19
+}
+
+
 
 ## Testing
 To run the tests, run
