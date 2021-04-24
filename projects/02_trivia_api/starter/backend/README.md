@@ -83,6 +83,8 @@ DELETE '/questions/<int:q_id>'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
+SAMPLE REQUEST: 'curl http://localhost:5000/categories'
+SAMPLE RESPONSE:
 {'1' : "Science",
 '2' : "Art",
 '3' : "Geography",
@@ -188,7 +190,7 @@ SAMPLE RESPONSE:
 - Returns: JSON success message
 - SAMPLE REQUEST: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"question":"Neverwhere", "answer":"Neil Gaiman", "difficulty":"5", "category":"1"}'`
 
-SAMPLE RESPONSE
+-SAMPLE RESPONSE:
 {
   "success": true
 }
