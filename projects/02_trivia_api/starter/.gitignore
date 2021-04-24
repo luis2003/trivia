@@ -1,6 +1,9 @@
+.env
 .vscode
+.idea
 __pycache__
 venv
+env
 
 # OS generated files #
 ######################
